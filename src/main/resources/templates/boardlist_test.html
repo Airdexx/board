@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Test pages</title>
+</head>
+<body class="bgcolor">
+    <pre class="title_letter order_by_center"> This is a test page.</pre>
+
+    <div class="fixed-header">
+        <table class="centered-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">글번호</th>
+                    <th style="width: 25%;">제목</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="content">
+        <table class="centered-table">
+            <tbody>
+                <tr th:each="board : ${list}">
+                    <td th:text="${board.id}">1</td>
+                    <td>
+                        <a th:text="${board.title}" th:href="@{/board/view(id=${board.id})}"></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="search-container">
+            <form th:action="@{/board/list}" method="get">
+                <input type="text" name="searchKeyword">
+                <button type="submit">검색</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

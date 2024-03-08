@@ -1,0 +1,28 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body covers the full viewport height */
+    justify-content: space-between; /* Align items with space between */
+}
+
+.title_letter {
+    text-align: center; /* Center the text */
+}
+
+.fixed-header {
+    position: relative; /* Position the fixed headers relative to this container */
+    height: 50px; /* Set the height of the fixed headers container */
+}
+
+.content {
+    flex-grow: 1; /* Allow the content to grow and fill the available space */
+}
+
+.centered-table {
+    margin: 0 auto; /* Center the table horizontally */
+    text-align: center; /* Center the text within table cells */
+}
+
+.search-container {
+    text-align: center; /* Center the items horizontally */
+}
