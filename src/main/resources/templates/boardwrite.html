@@ -1,39 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>게시물 작성폼</title>
+    <title>Dropdown Example</title>
+    <style>
+        /* 스타일을 추가합니다. */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {background-color: #f1f1f1;}
+
+        .show {display: block;}
+
+        /* 추가한 스타일 */
+        .selected-item {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* 스타일을 추가합니다. */
+        .textarea-container {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100px;
+            height: 50px;
+            resize: none;
+            border: 1px solid #ccc;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .add-button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
-
-<style>
-
-    .layout {
-        width : 500px;
-        margin : 0 auto;
-        margin-top : 40px;
-    }
-
-    .layout input {
-        width : 100%;
-        box-sizing : border-box
-    }
-
-    .layout textarea {
-        width : 100%;
-        margin-top : 10px;
-        min-height : 300px;
-    }
-
-</style>
-
 <body>
-<div class="layout">
-    <form action="/board/writepro" method="post" enctype="multipart/form-data">
-        <input name="title" type="text">
-        <textarea name="content"></textarea>
-        <input type="file" name="file">
-        <button type="submit">작성</button>
-    </form>
+<!-- 대분류 삭제 후 각 부위에 따른 세부운동 바로 표시로 변경-->
+<div class="textarea-container">
+    <select id="setsDropdown">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    </select>
+    <select id="repsDropdown">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+    </select>
+    <input type="hidden" id="bodyPart">
+    <textarea id="titleTextarea" placeholder="title"></textarea>
+    <textarea id="weightTextarea" placeholder="Weight"></textarea>
+    <textarea id="feedbackTextarea" placeholder="Feedback"></textarea>
+
+    <button class="add-button" onclick="saveData()">추가</button> <!-- saveData 함수 출력 -->
 </div>
+<div class="dropdown">
+    <button onclick="toggleDropdown('backDropdown')" class="dropbtn">등</button>
+    <div id="backDropdown" class="dropdown-content">
+        <a th:each="item : ${backNames}" th:text="${item}" th:attr="onclick='selectItem(\'' + ${item} + '\', \'backDropdown\')'"></a>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button onclick="toggleDropdown('chestDropdown')" class="dropbtn">가슴</button>
+    <div id="chestDropdown" class="dropdown-content">
+        <!-- 여기에 드롭다운 메뉴 항목을 Thymeleaf 반복문으로 추가합니다. -->
+        <a th:each="item : ${chestNames}" th:text="${item}" th:attr="onclick='selectItem(\'' + ${item} + '\', \'chestDropdown\')'"></a>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button onclick="toggleDropdown('deltDropdown')" class="dropbtn">어깨</button>
+    <div id="deltDropdown" class="dropdown-content">
+        <!-- 여기에 드롭다운 메뉴 항목을 Thymeleaf 반복문으로 추가합니다. -->
+        <a th:each="item : ${deltNames}" th:text="${item}" th:attr="onclick='selectItem(\'' + ${item} + '\', \'deltDropdown\')'"></a>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button onclick="toggleDropdown('legDropdown')" class="dropbtn">하체</button>
+    <div id="legDropdown" class="dropdown-content">
+        <!-- 여기에 드롭다운 메뉴 항목을 Thymeleaf 반복문으로 추가합니다. -->
+        <a th:each="item : ${legNames}" th:text="${item}" th:attr="onclick='selectItem(\'' + ${item} + '\', \'legDropdown\')'"></a>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button onclick="toggleDropdown('armDropdown')" class="dropbtn">팔</button>
+    <div id="armDropdown" class="dropdown-content">
+        <!-- 여기에 드롭다운 메뉴 항목을 Thymeleaf 반복문으로 추가합니다. -->
+        <a th:each="item : ${armNames}" th:text="${item}" th:attr="onclick='selectItem(\'' + ${item} + '\', \'armDropdown\')'"></a>
+    </div>
+</div>
+
+<!-- 선택한 아이템을 표시할 곳 -->
+<div id="selectedItem" class="selected-item"></div>
+<script type="text/javascript">
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+
+    function closeDropdowns() {
+        for (var i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].classList.remove("show");
+        }
+    }
+
+    function toggleDropdown(dropdownId) {
+        var dropdown = document.getElementById(dropdownId);
+        if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        } else {
+            closeDropdowns();
+            dropdown.classList.add("show");
+        }
+    }
+
+    // 사용자가 드롭다운 메뉴 항목을 클릭했을 때 호출되는 함수
+    function selectItem(item) {
+        document.getElementById("selectedItem").innerHTML = "선택한 운동: " + item;
+
+        return {
+            item: item
+        };
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            closeDropdowns();
+        }
+    }
+
+    function saveData() {
+        var selectedExercise = document.getElementById("selectedItem").textContent.replace("선택한 운동: ", "");
+        var sets = document.getElementById("setsDropdown").value;
+        var reps = document.getElementById("repsDropdown").value;
+        var weight = parseInt(document.getElementById("weightTextarea").value);
+        var feedback = document.getElementById("feedbackTextarea").value;
+        var title = document.getElementById("titleTextarea").value;
+
+        // 각 변수를 콘솔에 출력
+        console.log("Selected Exercise: ", selectedExercise);
+        console.log("Sets: ", sets);
+        console.log("Reps: ", reps);
+        console.log("Weight: ", weight);
+        console.log("Feedback: ", feedback);
+        console.log("Title: ", title);
+
+        // XMLHttpRequest 객체 생성
+        var xhr = new XMLHttpRequest();
+
+        // 요청을 처리할 URL 설정
+        var url = "/board/write/savedata"; // 실제 서버 URL로 변경해야 합니다.
+
+        // POST 요청을 설정
+        xhr.open("POST", url, true);
+
+        // 요청 헤더 설정
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        // 요청 완료 후 실행될 콜백 함수 설정
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr. status === 200) {
+                // 요청이 성공적으로 완료됐을 때 실행할 로직을 여기에 추가합니다.
+                alert("데이터 전송 성공!");
+                // 페이지 새로고침
+                window.location.reload();
+            } else {
+                console.error("실패");
+                }
+        };
+
+        // 전송할 데이터 설정
+        var data = {
+            exercise: selectedExercise,
+            sets: parseInt(sets),
+            reps: parseInt(reps),
+            weight: weight,
+            title: title,
+            feedback: feedback,
+        };
+
+        // 데이터를 JSON 문자열로 변환하여 전송
+        xhr.send(JSON.stringify(data));
+    }
+</script>
 </body>
 </html>

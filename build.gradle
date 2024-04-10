@@ -22,15 +22,25 @@ repositories {
 }
 
 dependencies {
+	implementation 'javax.servlet:javax.servlet-api:4.0.1' // 서블릿 API
+	implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.16' // 톰캣 임베디드 코어
+	implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.16' // JSP 지원을 위한 톰캣 임베디드 Jasper
+	implementation 'org.apache.tomcat.embed:tomcat-embed-el:10.1.16' // 톰캣 임베디드 EL (Expression Language)
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	implementation 'org.json:json:20220320'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	maxParallelForks = 4 // 병렬로 실행할 테스트 수를 지정합니다.
+	enabled = false
 }

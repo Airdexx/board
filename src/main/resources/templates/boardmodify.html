@@ -2,37 +2,113 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>게시물 작성폼</title>
+    <title>게시물 수정 폼</title>
+    <style>
+        .add-button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        /* 수정 버튼 스타일 */
+        .layout button {
+            margin-top: 10px; /* 버튼과 위의 요소 간 간격 조정 */
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
-<style>
-
-    .layout {
-        width : 500px;
-        margin : 0 auto;
-        margin-top : 40px;
-    }
-
-    .layout input {
-        width : 100%;
-        box-sizing : border-box
-    }
-
-    .layout textarea {
-        width : 100%;
-        margin-top : 10px;
-        min-height : 300px;
-    }
-
-</style>
-
 <body>
-<div class="layout">
-    <form th:action="@{/board/update/{id}(id = ${board.id})}" method="post">
-        <input name="title" type="text" th:value="${board.title}">
-        <textarea name="content" th:text="${board.content}"></textarea>
-        <button type="submit">수정</button>
-    </form>
+
+<h1>게시물 수정</h1>
+
+<div class="textarea-container">
+    <!-- Sets Dropdown -->
+    <select id="setsDropdown">
+        <option th:each="i : ${#numbers.sequence(1, 20)}"
+                th:value="${i}"
+                th:text="${i}"
+                th:selected="${i == board.sets}">Sets</option>
+    </select>
+    <!-- Reps Dropdown -->
+    <select id="repsDropdown">
+        <option th:each="i : ${#numbers.sequence(1, 20)}"
+                th:value="${i}"
+                th:text="${i}"
+                th:selected="${i == board.reps}">Reps</option>
+    </select>
+
+    <input type="hidden" id="bodyPart">
+    <textarea id="titleTextarea" placeholder="title" th:text="${board.title}"></textarea>
+    <textarea id="weightTextarea" placeholder="Weight" th:text="${board.weight}"></textarea>
+    <textarea id="feedbackTextarea" placeholder="Feedback" th:text="${board.feedback}"></textarea>
+    <button class="add-button" onclick="modifyData()">저장</button> <!-- saveData 함수 출력 -->
 </div>
+<script th:inline="javascript">
+    var record_id = /*[[${board.record_id}]]*/;
+
+    //새로고침
+    function refreshPage() {
+        window.location.reload(); // 현재 페이지 새로고침
+    }
+
+    // 데이터 수정 성공 후 이전 페이지로 이동하는 함수
+    function redirectToPreviousPage() {
+        window.location.href = document.referrer; // 이전 페이지로 이동
+    }
+
+    function modifyData() {
+        var sets = document.getElementById("setsDropdown").value;
+        var reps = document.getElementById("repsDropdown").value;
+        var weight = parseInt(document.getElementById("weightTextarea").value);
+        var feedback = document.getElementById("feedbackTextarea").value;
+        var title = document.getElementById("titleTextarea").value;
+
+        // XMLHttpRequest 객체 생성
+        var xhr = new XMLHttpRequest();
+
+        // 요청을 처리할 URL 설정
+        var url = "/board/update/" + record_id; // 실제 서버 URL로 변경해야 합니다.
+
+        // POST 요청을 설정
+        xhr.open("POST", url, true);
+
+        // 요청 헤더 설정
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        // 요청 완료 후 실행될 콜백 함수 설정
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr. status === 200) {
+                // 요청이 성공적으로 완료됐을 때 실행할 로직을 여기에 추가합니다.
+                alert("데이터 수정 성공!");
+                // 페이지 새로고침
+                refreshPage();
+                // 이전 페이지로 리디렉션
+                redirectToPreviousPage();
+            } else {
+                console.error("실패");
+            }
+        };
+
+        // 전송할 데이터 설정
+        var data = {
+            sets: parseInt(sets),
+            reps: parseInt(reps),
+            weight: weight,
+            title: title,
+            feedback: feedback,
+            id : record_id
+        };
+
+        // 데이터를 JSON 문자열로 변환하여 전송
+        xhr.send(JSON.stringify(data));
+    }
+</script>
 </body>
 </html>
