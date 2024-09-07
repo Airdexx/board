@@ -45,7 +45,6 @@
     </select>
 
     <input type="hidden" id="bodyPart">
-    <textarea id="titleTextarea" placeholder="title" th:text="${board.title}"></textarea>
     <textarea id="weightTextarea" placeholder="Weight" th:text="${board.weight}"></textarea>
     <textarea id="feedbackTextarea" placeholder="Feedback" th:text="${board.feedback}"></textarea>
     <button class="add-button" onclick="modifyData()">저장</button> <!-- saveData 함수 출력 -->
@@ -68,7 +67,6 @@
         var reps = document.getElementById("repsDropdown").value;
         var weight = parseInt(document.getElementById("weightTextarea").value);
         var feedback = document.getElementById("feedbackTextarea").value;
-        var title = document.getElementById("titleTextarea").value;
 
         // XMLHttpRequest 객체 생성
         var xhr = new XMLHttpRequest();
@@ -101,7 +99,6 @@
             sets: parseInt(sets),
             reps: parseInt(reps),
             weight: weight,
-            title: title,
             feedback: feedback,
             id : record_id
         };

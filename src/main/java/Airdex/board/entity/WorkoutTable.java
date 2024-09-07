@@ -35,8 +35,6 @@ public class WorkoutTable {
     @Column(name = "feedback")
     private String feedback;
 
-    @Column(name = "title")
-    private String title;
 
     @JoinColumn(name = "exercise_category")
     private String exerciseCategory;
@@ -45,11 +43,6 @@ public class WorkoutTable {
     private String exercise_name;
 
     //제목은 직접 입력받고, 내용부분에는 운동부위를 표시하도록 수정
-    public String getTitle() {
-        title = this.title;
-        return title;
-    }
-
     public String getExerciseName() {
         return exercise_name;
     }

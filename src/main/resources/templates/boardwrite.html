@@ -108,7 +108,6 @@
         <option value="20">20</option>
     </select>
     <input type="hidden" id="bodyPart">
-    <textarea id="titleTextarea" placeholder="title"></textarea>
     <textarea id="weightTextarea" placeholder="Weight"></textarea>
     <textarea id="feedbackTextarea" placeholder="Feedback"></textarea>
 
@@ -152,7 +151,9 @@
         <a th:each="item : ${armNames}" th:text="${item}" th:attr="onclick='selectItem(\'' + ${item} + '\', \'armDropdown\')'"></a>
     </div>
 </div>
-
+<tr>
+    <td><a th:href="@{/board}">홈으로</a></td>
+</tr>
 <!-- 선택한 아이템을 표시할 곳 -->
 <div id="selectedItem" class="selected-item"></div>
 <script type="text/javascript">
@@ -195,7 +196,6 @@
         var reps = document.getElementById("repsDropdown").value;
         var weight = parseInt(document.getElementById("weightTextarea").value);
         var feedback = document.getElementById("feedbackTextarea").value;
-        var title = document.getElementById("titleTextarea").value;
 
         // 각 변수를 콘솔에 출력
         console.log("Selected Exercise: ", selectedExercise);
@@ -203,7 +203,6 @@
         console.log("Reps: ", reps);
         console.log("Weight: ", weight);
         console.log("Feedback: ", feedback);
-        console.log("Title: ", title);
 
         // XMLHttpRequest 객체 생성
         var xhr = new XMLHttpRequest();
@@ -235,7 +234,6 @@
             sets: parseInt(sets),
             reps: parseInt(reps),
             weight: weight,
-            title: title,
             feedback: feedback,
         };
 

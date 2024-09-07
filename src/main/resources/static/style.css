@@ -1,6 +1,13 @@
+/*
+.bgcolor {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; //Ensure the body covers the full viewport height
+    justify-content: space-between; // Align items with space between
+}*/
 
 .bgcolor {
-    background-color: lightskyblue;
+    color: beige;
 }
 
 .title_letter {

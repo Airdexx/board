@@ -2,33 +2,55 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>게시글 상세 페이지</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
+<script th:inline="javascript">
+    var record_id = /*[[${board.record_id}]]*/;
 
-<h1>운동 리스트</h1>
+    function refreshPage() {
+        window.location.reload(); // 현재 페이지 새로고침
+    }
 
-<table>
-    <thead>
-    <tr>
-        <th>Exercise Name</th>
-        <th>Date</th>
-        <th>Reps</th>
-        <th>Sets</th>
-        <th>Weight</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="workoutTable : ${workoutTables.content}">
-        <td th:text="${workoutTable.exercise_name}">Exercise Name</td>
-        <td th:text="${workoutTable.date}">Date</td>
-        <td th:text="${workoutTable.reps}">Reps</td>
-        <td th:text="${workoutTable.sets}">Sets</td>
-        <td th:text="${workoutTable.weight}">Weight</td>
-        <td><a th:href="@{/board/modify/{id}(id=${workoutTable.record_id})}">수정</a></td>
+    // 데이터 수정 성공 후 이전 페이지로 이동하는 함수
+    function redirectToPreviousPage() {
+        window.location.href = document.referrer; // 이전 페이지로 이동
+    }
 
-    </tr>
-    </tbody>
-</table>
+    // 삭제 작업이 완료된 후 실행되는 함수
+    function handleDeleteResult() {
+        var xhr = new XMLHttpRequest(); // xhr 객체 정의
+        var url = "/board/kill/" + record_id;
+        xhr.open("POST", url, true);
+
+        // 요청 헤더 설정
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        // 요청 완료 후 실행될 콜백 함수 설정
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr. status === 200) {
+                // 요청이 성공적으로 완료됐을 때 실행할 로직을 여기에 추가합니다.
+                alert("데이터 삭제 성공!");
+                // 페이지 새로고침
+                refreshPage();
+                // 이전 페이지로 리디렉션
+                redirectToPreviousPage();
+                redirectToPreviousPage();
+            } else {
+                // 요청이 실패했을 때 실행할 로직을 여기에 추가합니다.
+                console.error("데이터 삭제 실패");
+                redirectToPreviousPage();
+                redirectToPreviousPage();
+            }
+        }
+
+    var data={id : record_id};
+
+    // 데이터를 JSON 문자열로 변환하여 전송
+    xhr.send(JSON.stringify(data));
+}
+    handleDeleteResult(); // 함수 호출 추가
+</script>
 </body>
 </html>

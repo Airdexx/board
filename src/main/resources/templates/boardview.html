@@ -26,7 +26,10 @@
         <td th:text="${workoutTable.sets}">Sets</td>
         <td th:text="${workoutTable.weight}">Weight</td>
         <td><a th:href="@{/board/modify/{id}(id=${workoutTable.record_id})}">수정</a></td>
-
+        <td><a th:href="@{/board/delete/{id}(id=${workoutTable.record_id})}">삭제</a></td>
+    </tr>
+    <tr>
+        <td><a th:href="@{/board}">홈으로</a></td>
     </tr>
     </tbody>
 </table>

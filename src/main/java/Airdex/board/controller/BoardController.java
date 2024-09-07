@@ -15,11 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
+import java.util.Collections;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.Map;
 
 import Airdex.board.entity.DataType;
+import java.util.stream.Collectors;
 
 @Controller
 public class BoardController {
@@ -29,6 +31,11 @@ public class BoardController {
 
     @Autowired
     private Workout workout;
+
+    @GetMapping("/board")
+    public String mainPage(){
+        return "main";
+    }
 
     // 드롭다운을 통한 운동 추가완료
     @GetMapping("/board/write") //localhost:8080/board/write
@@ -51,7 +58,7 @@ public class BoardController {
     }
 
     //데이터 저장 기능 구현(2024-04-08)
-    @PostMapping("board/write/savedata")
+    @PostMapping("/board/write/savedata")
     @ResponseBody
     public String savedata(@RequestBody DataType data) {
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
@@ -60,7 +67,7 @@ public class BoardController {
         LocalDate date = LocalDate.now();
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
-            String sql = "INSERT INTO workout_table (exercise_name, sets, reps, weight, feedback, date, title, exercise_category, exercise_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO workout_table (exercise_name, sets, reps, weight, feedback, date, exercise_category, exercise_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, data.getExercise());
                 pstmt.setInt(2, data.getSets());
@@ -68,9 +75,8 @@ public class BoardController {
                 pstmt.setInt(4, data.getWeight());
                 pstmt.setString(5, data.getFeedback());
                 pstmt.setDate(6, Date.valueOf(date));
-                pstmt.setString(7, data.getTitle());
-                pstmt.setString(8, workoutService.getExerciseCategoryByExerciseName(data.getExercise()));
-                pstmt.setInt(9, workoutService.getExerciseIdByExerciseName(data.getExercise()));
+                pstmt.setString(7, workoutService.getExerciseCategoryByExerciseName(data.getExercise()));
+                pstmt.setInt(8, workoutService.getExerciseIdByExerciseName(data.getExercise()));
 
                 int rowsAffected = pstmt.executeUpdate();
                 if (rowsAffected > 0) {
@@ -85,24 +91,22 @@ public class BoardController {
         }
     }
 
-    /* 
-    // 작성시 처리할 페이지
-    @PostMapping(value = "/board/writepro")
-    public String boardWritePro(WorkoutTable workoutTable, Model model) throws Exception {
-        workoutService.writeWorkoutRecord(workoutTable);
-        model.addAttribute("message", "글 작성이 완료되었습니다.");
-        model.addAttribute("searchUrl", "/board/list");
-        return "message";
-    }
-    */
-
     //2024-03-18 localhost:8080/board/list 글번호와 제목 불러오기 성공(정렬은 프론트부분에서)
+    //2024-04-17 제목부분 삭제 후 요일별로 표시변경 및 최신순으로 정렬, 검색부분은 굳이 필요없을거같아서 삭제해도될듯
     @GetMapping("/board/list")
     public String boardList(Model model,
                             @PageableDefault(page = 0, size = 10, sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
 
         // 모든 데이터를 가져옴
         Page<WorkoutTable> resultList = workoutService.workoutRecordList(pageable);
+        List<WorkoutTable> uniqueDates = resultList.stream()
+                .collect(Collectors.groupingBy(WorkoutTable::getDate))
+                .values().stream()
+                .map(list -> list.get(0)) // 하나의 값만 유지
+                .collect(Collectors.toList());
+
+        // uniqueDates를 최신 날짜 순으로 정렬
+        Collections.sort(uniqueDates, (a, b) -> b.getDate().compareTo(a.getDate()));
 
         int nowPage = 0;
         int startPage = 0;
@@ -117,7 +121,7 @@ public class BoardController {
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("resultList", resultList);
+        model.addAttribute("resultList", uniqueDates);
 
         return "boardlist";
     }
@@ -130,11 +134,13 @@ public class BoardController {
         return "boardview";
     }
 
+    //modify 구현완료
     @GetMapping("/board/modify/{id}")
     public String boardModify(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("board", workoutService.getBoardById(id));
         return "boardmodify";
     }
+
     @PostMapping(value = "/board/update/{id}")
     @ResponseBody
     public String boardUpdate(@PathVariable("id") Integer id, @RequestBody Map<String, Object> data){
@@ -143,14 +149,13 @@ public class BoardController {
         String JDBC_PASSWORD = "Airdex3412@";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
-            String sql = "UPDATE workout_table SET sets=?, reps=?, weight=?, feedback=?, title=? WHERE record_id=?";
+            String sql = "UPDATE workout_table SET sets=?, reps=?, weight=?, feedback=? WHERE record_id=?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setInt(1, (Integer) data.get("sets"));
                 pstmt.setInt(2, (Integer) data.get("reps"));
                 pstmt.setInt(3, (Integer) data.get("weight"));
                 pstmt.setString(4, (String) data.get("feedback"));
-                pstmt.setString(5, (String) data.get("title"));
-                pstmt.setInt(6,id);
+                pstmt.setInt(5,id);
                 int rowsUpdated = pstmt.executeUpdate();
                 if (rowsUpdated > 0) {
                     return "Data modified successfully!";
@@ -163,37 +168,37 @@ public class BoardController {
             throw new RuntimeException("Error occurred while saving data to the database.", e);
         }
     }
-/*
-    @PostMapping(value = "/board/update/{id}")
-    public String boardUpdate(@PathVariable Integer id,
-                              @RequestParam("sets") Integer sets,
-                              @RequestParam("reps") Integer reps,
-                              @RequestParam("weight") Integer weight,
-                              @RequestParam("title") String title,
-                              @RequestParam("feedback") String feedback) {
+
+    // delete function(Completed in 2024-04-17)
+    @PostMapping("/board/kill/{id}")
+    public String boardDelete(@PathVariable("id") Integer id) {
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
         String JDBC_USER = "root";
         String JDBC_PASSWORD = "Airdex3412@";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
-            String sql = "UPDATE workout_table SET sets=?, reps=?, weight=?, feedback=?, title=? WHERE record_id=?";
+            conn.setAutoCommit(true);
+            String sql = "DELETE FROM workout_table WHERE record_id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setInt(1, sets);
-                pstmt.setInt(2, reps);
-                pstmt.setInt(3, weight);
-                pstmt.setString(4, feedback);
-                pstmt.setString(5, title);
-
+                pstmt.setLong(1, id);
                 int rowsUpdated = pstmt.executeUpdate();
                 if (rowsUpdated > 0) {
-                    return "Data modified successfully!";
+                    conn.commit();
+                    return "Data Deleted!";
                 } else {
-                    throw new SQLException("Failed to save data to the database.");
+                    throw new SQLException("Failed to delete data from the database.");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error occurred while saving data to the database.", e);
+            throw new RuntimeException("Error occurred while deleting data from the database.", e);
         }
- */
+
+    }
+
+    @GetMapping("/board/delete/{id}")
+    public String pageAfterDeleted(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("board", workoutService.getBoardById(id));
+        return "boarddelete";
+    }
 }
