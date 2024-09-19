@@ -63,7 +63,7 @@ public class BoardController {
     public String savedata(@RequestBody DataType data) {
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
         String JDBC_USER = "root";
-        String JDBC_PASSWORD = "Airdex3412@";
+        String JDBC_PASSWORD = "yourPW";
         LocalDate date = LocalDate.now();
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
