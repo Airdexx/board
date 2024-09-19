@@ -174,7 +174,7 @@ public class BoardController {
     public String boardDelete(@PathVariable("id") Integer id) {
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
         String JDBC_USER = "root";
-        String JDBC_PASSWORD = "Airdex3412@";
+        String JDBC_PASSWORD = "yourPW";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
             conn.setAutoCommit(true);
