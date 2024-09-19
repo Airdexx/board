@@ -146,7 +146,7 @@ public class BoardController {
     public String boardUpdate(@PathVariable("id") Integer id, @RequestBody Map<String, Object> data){
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
         String JDBC_USER = "root";
-        String JDBC_PASSWORD = "Airdex3412@";
+        String JDBC_PASSWORD = "yourPW";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
             String sql = "UPDATE workout_table SET sets=?, reps=?, weight=?, feedback=? WHERE record_id=?";
