@@ -75,7 +75,7 @@ public class WorkoutService {
         List<List<String>> result = new ArrayList<>();
         String url = "jdbc:mariadb://localhost:3306/board";
         String user = "root";
-        String password = "Airdex3412@";
+        String password = "yourPW";
 
         // 각 운동 부위에 해당하는 리스트를 메서드 호출마다 초기화
         List<String> back_name = new ArrayList<>();
