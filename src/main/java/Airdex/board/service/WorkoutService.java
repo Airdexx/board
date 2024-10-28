@@ -132,8 +132,8 @@ public class WorkoutService {
     }
     public String getExerciseCategoryByExerciseName(String usrExerciseName){
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
-        String JDBC_USER = "root";
-        String JDBC_PASSWORD = "Airdex3412@";
+        String JDBC_USER = "yourId";
+        String JDBC_PASSWORD = "yourPw";
         String exerciseCategory = null;
         String sql = "SELECT exercise_category FROM workout WHERE exercise_name = ?";
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
@@ -154,8 +154,8 @@ public class WorkoutService {
     public int getExerciseIdByExerciseName(String exerciseName){
 
         String JDBC_URL = "jdbc:mariadb://localhost:3306/board";
-        String JDBC_USER = "root";
-        String JDBC_PASSWORD = "Airdex3412@";
+        String JDBC_USER = "youtId";
+        String JDBC_PASSWORD = "yourPw";
         int exerciseId = -1;
         String sql = "SELECT exercise_id FROM workout WHERE exercise_name = ?";
         try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
